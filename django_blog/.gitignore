@@ -81,3 +81,4 @@ Pipfile.lock
 *.swp
 *.swo
 
+virt/
