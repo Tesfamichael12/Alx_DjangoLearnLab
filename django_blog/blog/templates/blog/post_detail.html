@@ -1,0 +1,62 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+  <article>
+    <h2>{{ post.title }}</h2>
+    <p>{{ post.content }}</p>
+    <p><small>Posted by {{ post.author }} on {{ post.published_date }}</small></p>
+    
+    <!-- Display tags -->
+    <p>Tags: 
+      {% for tag in post.tags.all %}
+        <a href="{% url 'posts-by-tag' tag.slug %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+      {% empty %}
+        No tags.
+      {% endfor %}
+    </p>
+
+    <!-- Edit/Delete Buttons for Post Author -->
+    {% if user == post.author %}
+      <a href="{% url 'post-update' post.pk %}" class="btn btn-info">Edit</a>
+      <a href="{% url 'post-delete' post.pk %}" class="btn btn-danger">Delete</a>
+    {% endif %}
+  </article>
+
+  <hr>
+
+  <!-- Comments Section -->
+  <h3>Comments:</h3>
+
+  <!-- Display existing comments -->
+  <ul class="list-group">
+    {% for comment in post.comments.all %}
+      <li class="list-group-item">
+        <p><strong>{{ comment.author }}</strong> ({{ comment.created_at|date:"F j, Y, g:i a" }}):</p>
+        <p>{{ comment.content }}</p>
+
+        <!-- Edit/Delete for Comment Author -->
+        {% if user == comment.author %}
+          <a href="{% url 'comment-edit' comment.pk %}" class="btn btn-sm btn-warning">Edit</a>
+          <a href="{% url 'comment-delete' comment.pk %}" class="btn btn-sm btn-danger">Delete</a>
+        {% endif %}
+      </li>
+    {% empty %}
+      <li class="list-group-item">No comments yet. Be the first to comment!</li>
+    {% endfor %}
+  </ul>
+
+  <hr>
+
+  <!-- Comment Form for Authenticated Users -->
+  {% if user.is_authenticated %}
+    <h3>Leave a Comment:</h3>
+    <form method="POST">
+      {% csrf_token %}
+      {{ comment_form.as_p }}
+      <button type="submit" class="btn btn-primary">Post Comment</button>
+    </form>
+  {% else %}
+    <p>You must be <a href="{% url 'login' %}">logged in</a> to post a comment.</p>
+  {% endif %}
+
+{% endblock %}

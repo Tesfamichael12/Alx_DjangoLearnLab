@@ -1,0 +1,41 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Django Blog{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'posts' %}">Blog Posts</a></li>
+        <li><a href="{% url 'login' %}">Login</a></li>
+        <li><a href="{% url 'register' %}">Register</a></li>
+      </ul>
+
+      <!-- Search Form -->
+      <form action="{% url 'search-results' %}" method="GET" style="display: inline-block;">
+        <input type="text" name="q" placeholder="Search posts..." required>
+        <button type="submit">Search</button>
+      </form>
+      <!-- End Search Form -->
+    </nav>
+  </header>
+
+  <div class="content">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+  <footer>
+    <p>&copy; 2024 Django Blog</p>
+  </footer>
+
+  <script src="{% static 'blog/js/scripts.js' %}"></script>
+</body>
+</html>
